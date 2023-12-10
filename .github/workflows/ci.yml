@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python and Install Dependency
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'poetry'
+        run: poetry install --no-interaction --no-root
+      - name: Ruff
+        run: |
+          poetry run ruff check --output-format=github .
+          poetry run ruff format --check
+          poetry run pyright .
