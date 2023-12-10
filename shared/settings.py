@@ -42,4 +42,4 @@ class Settings(BaseSettings):
     rabbitmq: RabbitMQSettings
 
 
-settings = Settings()
+settings = Settings()  # type: ignore
