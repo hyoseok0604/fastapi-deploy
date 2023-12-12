@@ -20,8 +20,9 @@ jobs:
           cache: 'poetry'
       - name: Install Dependency
         run: poetry install --no-interaction --no-root
-      - name: Ruff
-        run: |
-          poetry run ruff check --output-format=github .
-          poetry run ruff format --check
-          poetry run pyright .
+      - name: Ruff check
+        run: poetry run ruff check --output-format=github .
+      - name: Ruff format
+        run: poetry run ruff format --check --output-format=github .
+      - name: Pyright
+        run: poetry run pyright .
