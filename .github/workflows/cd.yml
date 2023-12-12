@@ -42,6 +42,5 @@ jobs:
           REPOSITORY: test
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker compose --version
-          
-        
+          docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env build web
+          docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env push web

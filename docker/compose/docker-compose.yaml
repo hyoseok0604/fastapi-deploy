@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
+    image: $REGISTRY/$REPOSITORY:$IMAGE_TAG
     restart: unless-stopped
     expose:
       - 8080
