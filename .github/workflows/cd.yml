@@ -58,7 +58,7 @@ jobs:
           key: ${{ secrets.AWS_EC2_KEY }}
           script: |
             cd fastapi-deploy
-            
+
             rm .env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
             echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
@@ -77,4 +77,4 @@ jobs:
             git pull origin main
             
             docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env pull
-            docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env up
+            docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env up -d
