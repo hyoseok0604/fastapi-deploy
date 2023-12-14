@@ -58,23 +58,5 @@ jobs:
           key: ${{ secrets.AWS_EC2_KEY }}
           script: |
             cd fastapi-deploy
-
-            rm .env
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
-            echo "POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }}" >> .env
-            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
-            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
-            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
-            echo "SESSION_KEY=${{ secrets.SESSION_KEY }}" >> .env
-            echo "RABBITMQ_DEFAULT_USER=${{ secrets.RABBITMQ_DEFAULT_USER }}" >> .env
-            echo "RABBITMQ_DEFAULT_PASS=${{ secrets.RABBITMQ_DEFAULT_PASS }}" >> .env
-            echo "DOMAIN=${{ secrets.DOMAIN }}" >> .env
-
-            git checkout main
-            git pull origin main
-            
-            docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env pull
-            docker compose -f ./docker/compose/docker-compose.yaml --project-directory . --env-file ./.env up -d
+      - name: test
+        run: ls
