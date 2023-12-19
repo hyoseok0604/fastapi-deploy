@@ -59,7 +59,7 @@ services:
       test: ["CMD", "pg_isready", "--dbname", "${POSTGRES_DATABASE}", "--username", "${POSTGRES_USER}", "-q"]
       interval: 5s
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_USER=postgres
       - POSTGRES_DB=${POSTGRES_DATABASE}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
