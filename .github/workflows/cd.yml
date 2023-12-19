@@ -32,7 +32,7 @@ jobs:
           WEB_REPOSITORY: test
           WEB_TAG: ${{ github.sha }}
         run: |
-          ./scripts/compose/production.sh build web
+          ./scripts/compose/production.sh build web --quiet
           ./scripts/compose/production.sh push web
   pull_image_and_run:
     runs-on: [self-hosted, ec2]
@@ -57,11 +57,16 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Pull image and Run docker compose
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WEB_REPOSITORY: test
           WEB_TAG: ${{ github.sha }}
-      - name: Pull image and Run docker compose
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+          SESSION_KEY: ${{ secrets.SESSION_KEY }}
         run: |
           ./scripts/compose/production.sh pull
           ./scripts/compose/production.sh up -d
