@@ -32,6 +32,11 @@ services:
       context: .
       dockerfile: docker/worker/Dockerfile
     restart: unless-stopped
+    environment:
+      - POSTGRES_URI=postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}
+      - REDIS_URI=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - RABBITMQ_URI=amqp://rabbitmq:${RABBITMQ_PASSWORD}@rabbitmq:5672/
+      - SESSION_KEY=${SESSION_KEY}
     cap_add:
       - SYS_ADMIN
     healthcheck:
