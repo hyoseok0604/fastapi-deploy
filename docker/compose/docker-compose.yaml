@@ -8,8 +8,13 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
-    image: $REGISTRY/$REPOSITORY:$IMAGE_TAG
+    image: ${REGISTRY}/${WEB_REPOSITORY}:${WEB_TAG}
     restart: unless-stopped
+    environment:
+      - POSTGRES_URI=postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}
+      - REDIS_URI=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - RABBITMQ_URI=amqp://rabbitmq:${RABBITMQ_PASSWORD}@rabbitmq:5672/
+      - SESSION_KEY=${SESSION_KEY}
     expose:
       - 8080
     depends_on:
@@ -66,8 +71,8 @@ services:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 5s
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
       - rabbitmq_log:/var/log/rabbitmq
