@@ -65,6 +65,7 @@ jobs:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
           SESSION_KEY: ${{ secrets.SESSION_KEY }}
+          DOMAIN: ${{ secrets.DOMAIN }}
         run: |
           ./scripts/compose/production.sh pull
           ./scripts/compose/production.sh up -d
