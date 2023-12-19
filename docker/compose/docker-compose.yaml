@@ -56,7 +56,7 @@ services:
     expose:
       - 5432
     healthcheck:
-      test: ["CMD", "pg_isready", "--dbname", "${POSTGRES_DATABASE}", "--username", "${POSTGRES_USER}", "-q"]
+      test: ["CMD", "pg_isready", "--dbname", "${POSTGRES_DATABASE}", "--username", "postgres", "-q"]
       interval: 5s
     environment:
       - POSTGRES_USER=postgres
