@@ -85,6 +85,8 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WEB_REPOSITORY: test
           WEB_TAG: ${{ github.sha }}
+          WORKER_REPOSITORY: test-worker
+          WORKER_TAG: ${{ github.sha }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
