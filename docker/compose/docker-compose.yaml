@@ -86,14 +86,12 @@ services:
     image: redis:7-alpine
     container_name: redis
     restart: unless-stopped
-    command: /bin/sh -c "redis-server --requirepass $${REDIS_PASSWORD}"
+    command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
     expose:
       - 6379
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a $${REDIS_PASSWORD} ping | grep PONG"]
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep PONG"]
       interval: 5s
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     logging:

@@ -31,6 +31,7 @@ jobs:
         with: # web use worker code
           files_yaml: |
             shared:
+              - docker/**
               - shared/**
               - poetry.lock
               - pyproject.toml
