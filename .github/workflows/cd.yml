@@ -98,7 +98,7 @@ jobs:
           WEB_TAG: ${{ github.sha }}
         run: |
           ./scripts/compose/production.sh pull -q web
-          ./scripts/compose/production.sh up -d --pull never web
+          ./scripts/compose/production.sh up -d --no-deps --pull never web
       - name: Pull image and Run (Worker)
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -106,7 +106,7 @@ jobs:
           WORKER_TAG: ${{ github.sha }}
         run: |
           ./scripts/compose/production.sh pull -q worker
-          ./scripts/compose/production.sh up -d --pull never worker
+          ./scripts/compose/production.sh up -d --no-deps --pull never worker
       - name: Cleanup image
         run: |
           docker image prune --all --force
