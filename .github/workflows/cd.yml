@@ -106,3 +106,6 @@ jobs:
         run: |
           ./scripts/compose/production.sh pull -q worker
           ./scripts/compose/production.sh up -d --pull never worker
+      - name: Cleanup image
+        run: |
+          docker image prune --all --force
