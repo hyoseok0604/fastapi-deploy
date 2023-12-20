@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  push_image:
+  build_and_push_image:
     runs-on: ubuntu-latest
-    name: Build and Push Web image to Amazon
+    name: Build and Push Web, Worker image to Amazon ECR
     environment: production
     steps:
       - name: Checkout
@@ -25,8 +25,33 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build, tag, and push docker image to Amazon ECR
-        id: build-and-push-image
+      - name: Get Changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+        with: # web use worker code
+          files_yaml: |
+            shared:
+              - shared/**
+              - poetry.lock
+              - pyproject.toml
+            web:
+              - web/**
+              - worker/**
+              - shared/**
+            worker:
+              - worker/**
+              - shared/**
+      - name: Build, tag, and push docker image to Amazon ECR (Worker)
+        if: ${{ (steps.changed-files.outputs.shared_any_changed == 'true') || (steps.changed-files.outputs.worker_any_changed == 'true') }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          WORKER_REPOSITORY: test-worker
+          WORKER_TAG: ${{ github.sha }}
+        run: |
+          ./scripts/compose/production.sh build worker --quiet
+          ./scripts/compose/production.sh push worker
+      - name: Build, tag, and push docker image to Amazon ECR (Web)
+        if: ${{ (steps.changed-files.outputs.shared_any_changed == 'true') || (steps.changed-files.outputs.web_any_changed == 'true') }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WEB_REPOSITORY: test
@@ -38,7 +63,7 @@ jobs:
     runs-on: [self-hosted, ec2]
     name: Pull image and Run docker compose
     environment: production
-    needs: [push_image]
+    needs: [build_and_push_image]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
