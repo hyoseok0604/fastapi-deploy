@@ -80,13 +80,8 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-      - name: Pull image and Run docker compose
+      - name: Run Basic Services (DB, Server, ...)
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          WEB_REPOSITORY: test
-          WEB_TAG: ${{ github.sha }}
-          WORKER_REPOSITORY: test-worker
-          WORKER_TAG: ${{ github.sha }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
@@ -94,5 +89,20 @@ jobs:
           SESSION_KEY: ${{ secrets.SESSION_KEY }}
           DOMAIN: ${{ secrets.DOMAIN }}
         run: |
-          ./scripts/compose/production.sh pull
-          ./scripts/compose/production.sh up -d
+          ./scripts/compose/production.sh up --quiet-pull -d postgres rabbitmq redis caddy
+      - name: Pull image and Run (Web)
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          WEB_REPOSITORY: test
+          WEB_TAG: ${{ github.sha }}
+        run: |
+          ./scripts/compose/production.sh pull -q web
+          ./scripts/compose/production.sh up -d --pull never web
+      - name: Pull image and Run (Worker)
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          WORKER_REPOSITORY: test-worker
+          WORKER_TAG: ${{ github.sha }}
+        run: |
+          ./scripts/compose/production.sh pull -q worker
+          ./scripts/compose/production.sh up -d --pull never worker
