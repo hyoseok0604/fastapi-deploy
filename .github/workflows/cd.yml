@@ -12,8 +12,9 @@ jobs:
     name: Build and Push Web, Worker image to Amazon ECR
     environment: production
     outputs:
-      run_web: ${{ (steps.changed-files.outputs.shared_any_changed == 'true') || (steps.changed-files.outputs.web_any_changed == 'true') }}
-      run_worker: ${{ (steps.changed-files.outputs.shared_any_changed == 'true') || (steps.changed-files.outputs.worker_any_changed == 'true') }} 
+      shared_any_changed: ${{ steps.changed-files.outputs.shared_any_changed }}
+      web_any_changed: ${{ steps.changed-files.outputs.web_any_changed }}
+      worker_any_changed: ${{ steps.changed-files.outputs.worker_any_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,7 +96,7 @@ jobs:
         run: |
           ./scripts/compose/production.sh up --quiet-pull -d postgres rabbitmq redis caddy
       - name: Pull image and Run (Web)
-        if: ${{ needs.build_and_push_image.outputs.run_web }}
+        if: ${{ (needs.build_and_push_image.outputs.shared_any_changed == 'true') || (needs.build_and_push_image.outputs.web_any_changed == 'true') }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WEB_REPOSITORY: test
@@ -104,7 +105,7 @@ jobs:
           ./scripts/compose/production.sh pull -q web
           ./scripts/compose/production.sh up -d --no-deps --pull never web
       - name: Pull image and Run (Worker)
-        if: ${{ needs.build_and_push_image.outputs.run_worker }}
+        if: ${{ (needs.build_and_push_image.outputs.shared_any_changed == 'true') || (needs.build_and_push_image.outputs.worker_any_changed == 'true') }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WORKER_REPOSITORY: test-worker
