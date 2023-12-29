@@ -1,0 +1,15 @@
+services:
+  web:
+    volumes:
+      - ./shared:/src/shared
+      - ./worker:/src/worker
+      - ./web:/src/web
+    environment:
+      - ENV=development
+  worker:
+    volumes:
+      - ./shared:/src/shared
+      - ./worker:/src/worker
+      - ./web:/src/web
+    environment:
+      - ENV=development

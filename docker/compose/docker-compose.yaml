@@ -8,7 +8,6 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
-    image: ${REGISTRY}/${WEB_REPOSITORY}:${WEB_TAG}
     restart: unless-stopped
     environment:
       - POSTGRES_URI=postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}
@@ -29,7 +28,6 @@ services:
     build:
       context: .
       dockerfile: docker/worker/Dockerfile
-    image: ${REGISTRY}/${WORKER_REPOSITORY}:${WORKER_TAG}
     restart: unless-stopped
     environment:
       - POSTGRES_URI=postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}
