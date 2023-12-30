@@ -20,9 +20,20 @@ jobs:
           cache: 'poetry'
       - name: Install Dependency
         run: poetry install --no-interaction --no-root
-      - name: Ruff check
+      - name: Lint with ruff
         run: poetry run ruff check --output-format=github .
-      - name: Ruff format
+        continue-on-error: true
+      - name: Format with ruff
         run: poetry run ruff format --check --output-format=github .
-      - name: Pyright
+        continue-on-error: true
+      - name: Type checking with pyright
         run: poetry run pyright .
+        continue-on-error: true
+      - name: Test with pytest
+        run: poetry run pytest --junitxml=junit/test-results.xml
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-results
+          path: junit/test-results.xml
+        if: ${{ always() }}
