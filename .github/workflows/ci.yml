@@ -27,11 +27,11 @@ jobs:
       - name: Type checking with pyright
         run: poetry run pyright .
       - name: Test with pytest
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: poetry run pytest --junitxml=junit/test-results.xml
       - name: Upload test results
         uses: actions/upload-artifact@v3
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         with:
           name: pytest-results
           path: junit/test-results.xml
