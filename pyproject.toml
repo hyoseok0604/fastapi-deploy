@@ -16,6 +16,7 @@ sqlalchemy = "^2.0.23"
 [tool.poetry.group.web.dependencies]
 uvicorn = "^0.24.0.post1"
 fastapi = {extras = ["all"], version = "^0.104.1"}
+alembic = "^1.13.1"
 
 [tool.poetry.group.test.dependencies]
 ruff = "^0.1.7"
@@ -37,3 +38,6 @@ select = [
     "B",  # flake8-bugbear
     "UP",  # pyupgrade
 ]
+
+[tool.ruff.extend-per-file-ignores]
+"__init__.py" = ["F401"]
