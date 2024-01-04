@@ -7,7 +7,7 @@ on:
       - synchronize
 
 jobs:
-  lint:
+  lint_format_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
