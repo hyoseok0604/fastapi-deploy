@@ -7,8 +7,41 @@ on:
       - synchronize
 
 jobs:
-  lint:
+  lint_format_test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+      rabbitmq:
+        image: rabbitmq
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5672:5672
     steps:
       - uses: actions/checkout@v4
       - name: Install poetry
@@ -29,6 +62,10 @@ jobs:
       - name: Test with pytest
         env:
           PYTHONPATH: ${{ github.workspace }}
+          POSTGRES_URI: postgresql+psycopg://postgres:postgres@localhost:5432/postgres
+          REDIS_URI: redis://localhost:6379/0
+          RABBITMQ_URI: amqp://guest:guest@localhost:5672/
+          SESSION_KEY: key
         run: poetry run pytest --junitxml=junit/test-results.xml
       - name: Upload test results
         uses: actions/upload-artifact@v3
