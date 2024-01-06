@@ -98,6 +98,11 @@ jobs:
       - name: Pull image and Run (Web)
         if: ${{ (needs.build_and_push_image.outputs.shared_any_changed == 'true') || (needs.build_and_push_image.outputs.web_any_changed == 'true') }}
         env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+          SESSION_KEY: ${{ secrets.SESSION_KEY }}
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WEB_REPOSITORY: test
           WEB_TAG: ${{ github.sha }}
@@ -107,6 +112,11 @@ jobs:
       - name: Pull image and Run (Worker)
         if: ${{ (needs.build_and_push_image.outputs.shared_any_changed == 'true') || (needs.build_and_push_image.outputs.worker_any_changed == 'true') }}
         env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+          SESSION_KEY: ${{ secrets.SESSION_KEY }}
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           WORKER_REPOSITORY: test-worker
           WORKER_TAG: ${{ github.sha }}
